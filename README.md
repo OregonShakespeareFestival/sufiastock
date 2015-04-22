@@ -31,3 +31,8 @@
     r = Role.create name: "admin"
     r.users << User.find_by_user_key( "admin@archive.local" )
     r.save
+
+
+##Docker Image
+
+If you are using the docker image nginx is setup to respond to hostname sufia.*
