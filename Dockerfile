@@ -28,6 +28,8 @@ RUN yum install unzip -y
 
 RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler ImageMagick ImageMagick-devel -y
 
+# TODO: enable redis
+
 RUN yum install redis -y
 
 RUN yum install fpack -y

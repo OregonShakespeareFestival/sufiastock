@@ -1,7 +1,6 @@
 #!/bin/bash
 cd /rails
 rake db:seed
-bundle exec unicorn -E production -D -p 8080
+bundle exec unicorn -c /rails/config/container/unicorn.rb -E production
 nginx
-redis-server &
-QUEUE=* rake resque:work
+redis-server
