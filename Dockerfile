@@ -1,8 +1,5 @@
 ############################################################
 # A Docker Container Installation of Sufia 6.0
-# To-Do 
-# Install Fits
-# Install ffmpeg
 ############################################################
 
 #Declare CentOS the latest
@@ -12,6 +9,11 @@ Maintainer Andrew J Krug
 
 #Declare the Rails Environment
 ENV RAILS_ENV production
+
+#Add Blacklight Secret Throwaway ENV to facilitate build. ( this will be overriddden at container start )
+#
+ENV SECRET_KEY_BASE 679d736b2d27d018a28348a2f08286bb05f9827fe977a82add180b7dc18c229871b289a7ee747ef8c71945556fc30cafd7a734575559d634821441dee024cecd
+
 
 RUN yum update -y
 

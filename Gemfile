@@ -42,7 +42,7 @@ gem 'sufia', '6.0.0'
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'  # required to handle pagination properly in dashboard. See https://github.com/amatsuda/kaminari/pull/322
 
 gem "hydra-role-management"
-
+gem "unicorn"
 
 gem "rsolr", "~> 1.0.6"
 gem "devise"
