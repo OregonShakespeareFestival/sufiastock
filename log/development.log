@@ -1,0 +1,2778 @@
+  [1m[36m (19.3ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar(255) NOT NULL) [0m
+  [1m[35m (0.1ms)[0m  select sqlite_version(*)
+  [1m[36m (16.6ms)[0m  [1mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Migrating to CreateSearches (20150422171209)
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "searches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "query_params" text, "user_id" integer, "user_type" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_searches_on_user_id" ON "searches" ("user_id")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171209"]]
+  [1m[36m (17.0ms)[0m  [1mcommit transaction[0m
+Migrating to CreateBookmarks (20150422171210)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "bookmarks" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" integer NOT NULL, "user_type" varchar(255), "document_id" varchar(255), "title" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171210"]]
+  [1m[36m (16.1ms)[0m  [1mcommit transaction[0m
+Migrating to AddPolymorphicTypeToBookmarks (20150422171211)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "bookmarks" ADD "document_type" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_bookmarks_on_user_id" ON "bookmarks" ("user_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171211"]]
+  [1m[35m (21.2ms)[0m  commit transaction
+Migrating to DeviseCreateUsers (20150422171216)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar(255) DEFAULT '' NOT NULL, "encrypted_password" varchar(255) DEFAULT '' NOT NULL, "reset_password_token" varchar(255), "reset_password_sent_at" datetime, "remember_created_at" datetime, "sign_in_count" integer DEFAULT 0 NOT NULL, "current_sign_in_at" datetime, "last_sign_in_at" datetime, "current_sign_in_ip" varchar(255), "last_sign_in_ip" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.2ms)[0m  [1mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_users_on_email' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_users_on_email' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE UNIQUE INDEX "index_users_on_reset_password_token" ON "users" ("reset_password_token")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171216"]]
+  [1m[36m (20.8ms)[0m  [1mcommit transaction[0m
+Migrating to AddDeviseGuestsToUsers (20150422171217)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "users" ADD "guest" boolean DEFAULT 'f'[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171217"]]
+  [1m[36m (17.0ms)[0m  [1mcommit transaction[0m
+Migrating to ActsAsFollowerMigration (20150422171218)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "follows" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "followable_id" integer NOT NULL, "followable_type" varchar(255) NOT NULL, "follower_id" integer NOT NULL, "follower_type" varchar(255) NOT NULL, "blocked" boolean DEFAULT 'f' NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "fk_follows" ON "follows" ("follower_id", "follower_type")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='fk_follows' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='fk_follows' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "fk_followables" ON "follows" ("followable_id", "followable_type")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171218"]]
+  [1m[35m (16.4ms)[0m  commit transaction
+Migrating to AddSocialToUsers (20150422171219)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "users" ADD "facebook_handle" varchar(255)
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "users" ADD "twitter_handle" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "googleplus_handle" varchar(255)
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171219"]]
+  [1m[35m (22.9ms)[0m  commit transaction
+Migrating to CreateSingleUseLinks (20150422171220)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "single_use_links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "downloadKey" varchar(255), "path" varchar(255), "itemId" varchar(255), "expires" datetime, "created_at" datetime, "updated_at" datetime) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171220"]]
+  [1m[35m (21.7ms)[0m  commit transaction
+Migrating to AddLdapAttrsToUser (20150422171221)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "users" ADD "display_name" varchar(255)
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "address" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "admin_area" varchar(255)
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "department" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "title" varchar(255)
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "users" ADD "office" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "chat_id" varchar(255)
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "website" varchar(255)[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "affiliation" varchar(255)
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "telephone" varchar(255)[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171221"]]
+  [1m[36m (21.4ms)[0m  [1mcommit transaction[0m
+Migrating to AddAvatarsToUsers (20150422171222)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "users" ADD "avatar_file_name" varchar(255)[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "users" ADD "avatar_content_type" varchar(255)
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "users" ADD "avatar_file_size" integer[0m
+  [1m[35m (0.1ms)[0m  ALTER TABLE "users" ADD "avatar_updated_at" datetime
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171222"]]
+  [1m[35m (21.9ms)[0m  commit transaction
+Migrating to CreateChecksumAuditLogs (20150422171223)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "checksum_audit_logs" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "pid" varchar(255), "dsid" varchar(255), "version" varchar(255), "pass" integer, "expected_result" varchar(255), "actual_result" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "by_pid_and_dsid" ON "checksum_audit_logs" ("pid", "dsid")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171223"]]
+  [1m[36m (16.2ms)[0m  [1mcommit transaction[0m
+Migrating to CreateVersionCommitters (20150422171224)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "version_committers" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "obj_id" varchar(255), "datastream_id" varchar(255), "version_id" varchar(255), "committer_login" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171224"]]
+  [1m[36m (22.6ms)[0m  [1mcommit transaction[0m
+Migrating to AddGroupsToUsers (20150422171225)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "users" ADD "group_list" text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "users" ADD "groups_last_update" datetime
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171225"]]
+  [1m[35m (11.7ms)[0m  commit transaction
+Migrating to CreateLocalAuthorities (20150422171226)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "local_authority_entries" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "local_authority_id" integer, "label" varchar(255), "uri" varchar(255)) 
+  [1m[36m (0.1ms)[0m  [1mCREATE TABLE "local_authorities" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255)) [0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "domain_terms" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "model" varchar(255), "term" varchar(255)) 
+  [1m[36m (0.1ms)[0m  [1mCREATE TABLE "domain_terms_local_authorities" ("domain_term_id" integer, "local_authority_id" integer) [0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "subject_local_authority_entries" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "label" varchar(255), "lowerLabel" varchar(255), "url" varchar(255)) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "entries_by_term_and_label" ON "local_authority_entries" ("local_authority_id", "label")[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "entries_by_term_and_uri" ON "local_authority_entries" ("local_authority_id", "uri")[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "terms_by_model_and_term" ON "domain_terms" ("model", "term")
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "dtla_by_ids1" ON "domain_terms_local_authorities" ("local_authority_id", "domain_term_id")[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='dtla_by_ids1' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='dtla_by_ids1' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "dtla_by_ids2" ON "domain_terms_local_authorities" ("domain_term_id", "local_authority_id")[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "entries_by_lower_label" ON "subject_local_authority_entries" ("lowerLabel")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171226"]]
+  [1m[35m (16.5ms)[0m  commit transaction
+Migrating to CreateTrophies (20150422171227)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "trophies" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" integer, "generic_file_id" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171227"]]
+  [1m[35m (16.3ms)[0m  commit transaction
+Migrating to AddLinkedinToUsers (20150422171228)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "users" ADD "linkedin_handle" varchar(255)
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171228"]]
+  [1m[35m (21.4ms)[0m  commit transaction
+Migrating to CreateTinymceAssets (20150422171229)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "tinymce_assets" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "file" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171229"]]
+  [1m[35m (16.5ms)[0m  commit transaction
+Migrating to CreateContentBlocks (20150422171230)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "content_blocks" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "value" text, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.2ms)[0m  [1mCREATE UNIQUE INDEX "index_content_blocks_on_name" ON "content_blocks" ("name")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171230"]]
+  [1m[36m (23.2ms)[0m  [1mcommit transaction[0m
+Migrating to CreateFeaturedWorks (20150422171231)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "featured_works" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "order" integer DEFAULT 5, "generic_file_id" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_featured_works_on_generic_file_id" ON "featured_works" ("generic_file_id")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_featured_works_on_order" ON "featured_works" ("order")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171231"]]
+  [1m[35m (17.3ms)[0m  commit transaction
+Migrating to AddExternalKeyToContentBlocks (20150422171232)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.6ms)[0m  ALTER TABLE "content_blocks" ADD "external_key" varchar(255)
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_content_blocks_on_name' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_content_blocks_on_name' AND type='index'
+[0m
+  [1m[35m (0.2ms)[0m  DROP INDEX "index_content_blocks_on_name"
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171232"]]
+  [1m[35m (11.8ms)[0m  commit transaction
+Migrating to CreateMailboxer (20150422171233)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "mailboxer_conversations" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "subject" varchar(255) DEFAULT '', "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL) 
+  [1m[36m (0.1ms)[0m  [1mCREATE TABLE "mailboxer_receipts" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "receiver_id" integer, "receiver_type" varchar(255), "notification_id" integer NOT NULL, "is_read" boolean DEFAULT 'f', "trashed" boolean DEFAULT 'f', "deleted" boolean DEFAULT 'f', "mailbox_type" varchar(25), "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL) [0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "mailboxer_notifications" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "type" varchar(255), "body" text, "subject" varchar(255) DEFAULT '', "sender_id" integer, "sender_type" varchar(255), "conversation_id" integer, "draft" boolean DEFAULT 'f', "notification_code" varchar(255), "notified_object_id" integer, "notified_object_type" varchar(255), "attachment" varchar(255), "updated_at" datetime NOT NULL, "created_at" datetime NOT NULL, "global" boolean DEFAULT 'f', "expires" datetime) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_mailboxer_receipts_on_notification_id" ON "mailboxer_receipts" ("notification_id")[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_mailboxer_notifications_on_conversation_id" ON "mailboxer_notifications" ("conversation_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171233"]]
+  [1m[35m (20.8ms)[0m  commit transaction
+Migrating to AddConversationOptout (20150422171234)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "mailboxer_conversation_opt_outs" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "unsubscriber_id" integer, "unsubscriber_type" varchar(255), "conversation_id" integer) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171234"]]
+  [1m[35m (21.5ms)[0m  commit transaction
+Migrating to AddMissingIndices (20150422171235)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE  INDEX "index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type" ON "mailboxer_conversation_opt_outs" ("unsubscriber_id", "unsubscriber_type")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_mailboxer_conversation_opt_outs_on_conversation_id" ON "mailboxer_conversation_opt_outs" ("conversation_id")
+  [1m[36m (0.0ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_mailboxer_notifications_on_type" ON "mailboxer_notifications" ("type")
+  [1m[36m (0.0ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_mailboxer_notifications_on_sender_id_and_sender_type" ON "mailboxer_notifications" ("sender_id", "sender_type")[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+
+  [1m[36m (0.0ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_mailboxer_notifications_on_notified_object_id_and_type" ON "mailboxer_notifications" ("notified_object_id", "notified_object_type")[0m
+  [1m[35m (0.0ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_mailboxer_receipts_on_receiver_id_and_receiver_type" ON "mailboxer_receipts" ("receiver_id", "receiver_type")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171235"]]
+  [1m[36m (20.6ms)[0m  [1mcommit transaction[0m
+Migrating to CreateProxyDepositRights (20150422171236)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "proxy_deposit_rights" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "grantor_id" integer, "grantee_id" integer, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_proxy_deposit_rights_on_grantor_id" ON "proxy_deposit_rights" ("grantor_id")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_proxy_deposit_rights_on_grantee_id" ON "proxy_deposit_rights" ("grantee_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171236"]]
+  [1m[35m (16.7ms)[0m  commit transaction
+Migrating to CreateProxyDepositRequests (20150422171237)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "proxy_deposit_requests" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "pid" varchar(255) NOT NULL, "sending_user_id" integer NOT NULL, "receiving_user_id" integer NOT NULL, "fulfillment_date" datetime, "status" varchar(255) DEFAULT 'pending' NOT NULL, "sender_comment" text, "receiver_comment" text, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_proxy_deposit_requests_on_receiving_user_id" ON "proxy_deposit_requests" ("receiving_user_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_proxy_deposit_requests_on_sending_user_id" ON "proxy_deposit_requests" ("sending_user_id")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171237"]]
+  [1m[36m (22.5ms)[0m  [1mcommit transaction[0m
+Migrating to CreateFileViewStats (20150422171238)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "file_view_stats" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "date" datetime, "views" integer, "file_id" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_file_view_stats_on_file_id" ON "file_view_stats" ("file_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171238"]]
+  [1m[35m (17.1ms)[0m  commit transaction
+Migrating to CreateFileDownloadStats (20150422171239)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TABLE "file_download_stats" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "date" datetime, "downloads" integer, "file_id" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_file_download_stats_on_file_id" ON "file_download_stats" ("file_id")[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171239"]]
+  [1m[36m (16.4ms)[0m  [1mcommit transaction[0m
+Migrating to AddOrcidToUsers (20150422171240)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "users" ADD "orcid" varchar(255)[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171240"]]
+  [1m[36m (16.1ms)[0m  [1mcommit transaction[0m
+Migrating to CreateUserStats (20150422171241)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.4ms)[0m  [1mCREATE TABLE "user_stats" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "user_id" integer, "date" datetime, "file_views" integer, "file_downloads" integer, "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "file_view_stats" ADD "user_id" integer
+  [1m[36m (0.1ms)[0m  [1mALTER TABLE "file_download_stats" ADD "user_id" integer[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_user_stats_on_user_id" ON "user_stats" ("user_id")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_file_view_stats_on_user_id" ON "file_view_stats" ("user_id")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_file_download_stats_on_user_id" ON "file_download_stats" ("user_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171241"]]
+  [1m[35m (17.1ms)[0m  commit transaction
+Migrating to ChangeAuditLogPidToGenericFileId (20150422171242)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  CREATE TEMPORARY TABLE "achecksum_audit_logs" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "generic_file_id" varchar(255), "dsid" varchar(255), "version" varchar(255), "pass" integer, "expected_result" varchar(255), "actual_result" varchar(255), "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "tby_pid_and_dsid" ON "achecksum_audit_logs" ("generic_file_id", "dsid")
+  [1m[36m (0.0ms)[0m  [1mSELECT * FROM "checksum_audit_logs"[0m
+  [1m[35m (0.2ms)[0m  DROP TABLE "checksum_audit_logs"
+  [1m[36m (0.1ms)[0m  [1mCREATE TABLE "checksum_audit_logs" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "generic_file_id" varchar(255), "dsid" varchar(255), "version" varchar(255), "pass" integer, "expected_result" varchar(255), "actual_result" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='tby_pid_and_dsid' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='tby_pid_and_dsid' AND type='index'
+
+  [1m[36m (0.2ms)[0m  [1mCREATE  INDEX "by_pid_and_dsid" ON "checksum_audit_logs" ("generic_file_id", "dsid")[0m
+  [1m[35m (0.1ms)[0m  SELECT * FROM "achecksum_audit_logs"
+  [1m[36m (0.3ms)[0m  [1mDROP TABLE "achecksum_audit_logs"[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171242"]]
+  [1m[35m (24.7ms)[0m  commit transaction
+Migrating to ChangeProxyDepositRequestPidToGenericFileId (20150422171243)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TEMPORARY TABLE "aproxy_deposit_requests" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "generic_file_id" varchar(255) NOT NULL, "sending_user_id" integer NOT NULL, "receiving_user_id" integer NOT NULL, "fulfillment_date" datetime, "status" varchar(255) DEFAULT 'pending' NOT NULL, "sender_comment" text, "receiver_comment" text, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "tindex_aproxy_deposit_requests_on_sending_user_id" ON "aproxy_deposit_requests" ("sending_user_id")[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='tindex_aproxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='tindex_aproxy_deposit_requests_on_sending_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "tindex_aproxy_deposit_requests_on_receiving_user_id" ON "aproxy_deposit_requests" ("receiving_user_id")[0m
+  [1m[35m (0.0ms)[0m  SELECT * FROM "proxy_deposit_requests"
+  [1m[36m (0.2ms)[0m  [1mDROP TABLE "proxy_deposit_requests"[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "proxy_deposit_requests" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "generic_file_id" varchar(255) NOT NULL, "sending_user_id" integer NOT NULL, "receiving_user_id" integer NOT NULL, "fulfillment_date" datetime, "status" varchar(255) DEFAULT 'pending' NOT NULL, "sender_comment" text, "receiver_comment" text, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='tindex_aproxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='tindex_aproxy_deposit_requests_on_receiving_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='tindex_aproxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='tindex_aproxy_deposit_requests_on_sending_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_proxy_deposit_requests_on_receiving_user_id" ON "proxy_deposit_requests" ("receiving_user_id")[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1mCREATE  INDEX "index_proxy_deposit_requests_on_sending_user_id" ON "proxy_deposit_requests" ("sending_user_id")[0m
+  [1m[35m (0.1ms)[0m  SELECT * FROM "aproxy_deposit_requests"
+  [1m[36m (0.1ms)[0m  [1mDROP TABLE "aproxy_deposit_requests"[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150422171243"]]
+  [1m[36m (17.4ms)[0m  [1mcommit transaction[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_bookmarks_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_bookmarks_on_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='terms_by_model_and_term' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='terms_by_model_and_term' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='dtla_by_ids2' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='dtla_by_ids2' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='dtla_by_ids1' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='dtla_by_ids1' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_featured_works_on_order' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_featured_works_on_order' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_download_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_download_stats_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_view_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_view_stats_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='fk_followables' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='fk_followables' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='fk_follows' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='fk_follows' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_term_and_uri' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_term_and_uri' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_conversation_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_notified_object_id_and_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_notified_object_id_and_type' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_receipts_on_receiver_id_and_receiver_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_receipts_on_receiver_id_and_receiver_type' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_rights_on_grantee_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_rights_on_grantee_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_searches_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_searches_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_lower_label' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_lower_label' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_user_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_user_stats_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_users_on_reset_password_token' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_users_on_reset_password_token' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_users_on_email' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_users_on_email' AND type='index'
+
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to UserRoles (20150422171708)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "roles" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255)) [0m
+  [1m[35m (0.1ms)[0m  CREATE TABLE "roles_users" ("role_id" integer, "user_id" integer) 
+  [1m[36m (0.0ms)[0m  [1mselect sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_roles_users_on_role_id_and_user_id" ON "roles_users" ("role_id", "user_id")
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_roles_users_on_role_id_and_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_roles_users_on_role_id_and_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_roles_users_on_user_id_and_role_id" ON "roles_users" ("user_id", "role_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150422171708"]]
+  [1m[35m (21.4ms)[0m  commit transaction
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_bookmarks_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_bookmarks_on_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='by_pid_and_dsid' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='terms_by_model_and_term' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='terms_by_model_and_term' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='dtla_by_ids2' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='dtla_by_ids2' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='dtla_by_ids1' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='dtla_by_ids1' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_featured_works_on_order' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_featured_works_on_order' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_featured_works_on_generic_file_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_download_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_download_stats_on_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_download_stats_on_file_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_view_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_view_stats_on_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_file_view_stats_on_file_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='fk_followables' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='fk_followables' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='fk_follows' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='fk_follows' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_term_and_uri' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_term_and_uri' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_term_and_label' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_conversation_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_notified_object_id_and_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_notified_object_id_and_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_sender_id_and_sender_type' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_notifications_on_conversation_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_receipts_on_receiver_id_and_receiver_type' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_receipts_on_receiver_id_and_receiver_type' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_mailboxer_receipts_on_notification_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_sending_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_requests_on_receiving_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_rights_on_grantee_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_rights_on_grantee_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_proxy_deposit_rights_on_grantor_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_roles_users_on_user_id_and_role_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_roles_users_on_user_id_and_role_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_roles_users_on_role_id_and_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_roles_users_on_role_id_and_user_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_searches_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_searches_on_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='entries_by_lower_label' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='entries_by_lower_label' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_user_stats_on_user_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_user_stats_on_user_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_users_on_reset_password_token' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_users_on_reset_password_token' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_users_on_email' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_users_on_email' AND type='index'
+[0m
+
+
+Started GET "/" for 127.0.0.1 at 2015-04-22 10:34:14 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+ActiveFedora: loading fedora config from /home/krug/workspace/sufiastock/config/fedora.yml
+ActiveFedora: loading solr config from /home/krug/workspace/sufiastock/config/solr.yml
+Processing by HomepageController#index as HTML
+  [1m[35mContentBlock Load (0.1ms)[0m  SELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'featured_researcher'  ORDER BY created_at DESC LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "content_blocks" ("created_at", "name", "updated_at") VALUES (?, ?, ?)  [["created_at", "2015-04-22 17:34:14.575618"], ["name", "featured_researcher"], ["updated_at", "2015-04-22 17:34:14.575618"]]
+  [1m[36m (14.4ms)[0m  [1mcommit transaction[0m
+  [1m[35mContentBlock Load (0.1ms)[0m  SELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'marketing_text' LIMIT 1
+  [1m[36m (0.0ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "content_blocks" ("created_at", "name", "updated_at") VALUES (?, ?, ?)  [["created_at", "2015-04-22 17:34:14.594636"], ["name", "marketing_text"], ["updated_at", "2015-04-22 17:34:14.594636"]]
+  [1m[36m (11.6ms)[0m  [1mcommit transaction[0m
+Usergroups are ["public"]
+  [1m[35mLocalAuthority Load (0.1ms)[0m  SELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lc_subjects' LIMIT 1
+  [1m[36mLocalAuthority Load (0.1ms)[0m  [1mSELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lexvo_languages' LIMIT 1[0m
+  [1m[35mLocalAuthority Load (0.1ms)[0m  SELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lc_genres' LIMIT 1
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr fetch (239.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_marketing.html.erb (0.6ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_header.html.erb (29.2ms)
+  [1m[36m (0.1ms)[0m  [1mSELECT "featured_works"."generic_file_id" FROM "featured_works"   ORDER BY "featured_works"."order" ASC[0m
+  [1m[35mFeaturedWork Load (0.2ms)[0m  SELECT "featured_works".* FROM "featured_works"   ORDER BY "featured_works"."order" ASC
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_works.html.erb (11.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_recents.html.erb (0.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_researcher.html.erb (0.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_tagcloud.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_content.html.erb (18.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home.html.erb (50.6ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/index.html.erb within layouts/homepage (56.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.2ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (5323.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (1.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (3.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (1.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (3.6ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.6ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.3ms)
+Completed 200 OK in 5733ms (Views: 5404.5ms | ActiveRecord: 28.6ms)
+
+
+Started GET "/assets/blacklight_gallery/default.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/openseadragon/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight_gallery.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/generic_files.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/fileupload/style.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/fileupload/thumbnail-scaling.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/fileupload/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/sufia.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/select2.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/sufia-audio-overrides.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/video-js.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/nestable.css?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/core.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/autofocus.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/bookmark_toggle.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/collapsable.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/blacklight/blacklight.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect-highlight.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/button.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/popover.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:20 -0700
+
+
+Started GET "/assets/bootstrap/tab.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/terms_of_service.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/app.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/fileupload/tmpl.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/fileupload/locale.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/trophy.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/featured_researcher.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/batch_select_all.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/featured_works.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/edit_metadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/single_use_link.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/audio.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/search.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/ga_events.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/tabs.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/user_search.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/transfers.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/proxy_rights.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra/batch_select.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/dashboard_actions.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/batch.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra_collections.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra-editor/manage_repeating_fields.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra-editor/keyboard_support.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra-editor/editMetadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/hydra-editor/hydra-editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/jquery.treetable.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/browse_everything/behavior.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/jquery.tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/jquery.tinysort.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/jquery.blacklightTagCloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/nestable.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/sufia.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/bootstrap/glyphicons-halflings-regular.woff2" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/assets/old_main_tulips.jpg" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+
+
+Started GET "/catalog/facet/tag_sim.json" for 127.0.0.1 at 2015-04-22 10:34:21 -0700
+Processing by CatalogController#facet as JSON
+  Parameters: {"id"=>"tag_sim"}
+Usergroups are ["public"]
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>10, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>"tag_sim", "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>0, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>21, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc", "f.tag_sim.facet.offset"=>0}
+Solr fetch (6.6ms)
+Completed 200 OK in 16ms (Views: 0.3ms | ActiveRecord: 0.0ms)
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."email" = 'admin@archive.local' LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users"  WHERE "users"."email" = 'admin@archive.local' LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mrollback transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mUser Load (0.1ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."email" = 'admin@archive.local' LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mUser Exists (0.1ms)[0m  SELECT  1 AS one FROM "users"  WHERE "users"."email" = 'admin@archive.local' LIMIT 1
+Binary data inserted for `string` type on column `encrypted_password`
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "users" ("created_at", "display_name", "email", "encrypted_password", "updated_at") VALUES (?, ?, ?, ?, ?)[0m  [["created_at", "2015-04-22 17:36:12.421796"], ["display_name", "Admin"], ["email", "admin@archive.local"], ["encrypted_password", "$2a$10$/HC.Hzjp9MN8G/Y1UJa1LOVjdf89IOFW.eVi6/C91otKZFrfZKfYS"], ["updated_at", "2015-04-22 17:36:12.421796"]]
+  [1m[35m (15.0ms)[0m  commit transaction
+
+
+Started GET "/" for 127.0.0.1 at 2015-04-22 10:36:19 -0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+ActiveFedora: loading fedora config from /home/krug/workspace/sufiastock/config/fedora.yml
+ActiveFedora: loading solr config from /home/krug/workspace/sufiastock/config/solr.yml
+Attempted to init base path `dev`, but it already exists
+Processing by HomepageController#index as HTML
+  [1m[35mContentBlock Load (0.1ms)[0m  SELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'featured_researcher'  ORDER BY created_at DESC LIMIT 1
+  [1m[36mContentBlock Load (0.1ms)[0m  [1mSELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'marketing_text' LIMIT 1[0m
+Usergroups are ["public"]
+  [1m[35mLocalAuthority Load (0.1ms)[0m  SELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lc_subjects' LIMIT 1
+  [1m[36mLocalAuthority Load (0.1ms)[0m  [1mSELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lexvo_languages' LIMIT 1[0m
+  [1m[35mLocalAuthority Load (0.1ms)[0m  SELECT  "local_authorities".* FROM "local_authorities"  WHERE "local_authorities"."name" = 'lc_genres' LIMIT 1
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr fetch (154.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_marketing.html.erb (0.7ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_header.html.erb (24.3ms)
+  [1m[36m (0.1ms)[0m  [1mSELECT "featured_works"."generic_file_id" FROM "featured_works"   ORDER BY "featured_works"."order" ASC[0m
+  [1m[35mFeaturedWork Load (0.4ms)[0m  SELECT "featured_works".* FROM "featured_works"   ORDER BY "featured_works"."order" ASC
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_works.html.erb (11.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_recents.html.erb (0.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_researcher.html.erb (1.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_tagcloud.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_content.html.erb (19.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home.html.erb (46.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/index.html.erb within layouts/homepage (50.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (1361.2ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (0.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (2.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (1.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (3.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.3ms)
+Completed 200 OK in 1642ms (Views: 1438.6ms | ActiveRecord: 2.2ms)
+
+
+Started GET "/assets/blacklight_gallery/default.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight_gallery.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/openseadragon/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/sufia.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/generic_files.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/fileupload/style.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/fileupload/thumbnail-scaling.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/fileupload/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/video-js.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/sufia-audio-overrides.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/select2.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/nestable.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/autofocus.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/bookmark_toggle.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/collapsable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/blacklight/blacklight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect-highlight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/button.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/popover.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/bootstrap/tab.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/terms_of_service.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/sufia/app.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:21 -0700
+
+
+Started GET "/assets/fileupload/tmpl.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/fileupload/locale.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/trophy.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/featured_works.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/featured_researcher.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/batch_select_all.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/edit_metadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/single_use_link.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/audio.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/search.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/ga_events.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/tabs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/user_search.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/transfers.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/proxy_rights.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra/batch_select.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/dashboard_actions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/batch.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra_collections.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra-editor/manage_repeating_fields.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra-editor/keyboard_support.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra-editor/editMetadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/hydra-editor/hydra-editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/jquery.treetable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/browse_everything/behavior.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/jquery.tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/jquery.tinysort.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/jquery.blacklightTagCloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/nestable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/sufia.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:22 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/autofocus.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/bookmark_toggle.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/collapsable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/blacklight/blacklight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:45 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect-highlight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/bootstrap/button.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/bootstrap/popover.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/bootstrap/tab.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/terms_of_service.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/app.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/fileupload/tmpl.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/fileupload/locale.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/trophy.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/featured_works.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/featured_researcher.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/batch_select_all.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/edit_metadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/single_use_link.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/audio.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/ga_events.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/tabs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/user_search.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/transfers.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/hydra/batch_select.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/dashboard_actions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/batch.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/hydra_collections.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/hydra-editor/keyboard_support.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/hydra-editor/editMetadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/hydra-editor/hydra-editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery.tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery.tinysort.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/jquery.blacklightTagCloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia/tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/sufia.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/bootstrap/glyphicons-halflings-regular.woff2" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/assets/old_main_tulips.jpg" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+
+
+Started GET "/catalog/facet/tag_sim.json" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+Processing by CatalogController#facet as JSON
+  Parameters: {"id"=>"tag_sim"}
+Usergroups are ["public"]
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>10, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>"tag_sim", "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>0, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>21, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc", "f.tag_sim.facet.offset"=>0}
+Solr fetch (7.2ms)
+Completed 200 OK in 16ms (Views: 0.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2015-04-22 10:36:46 -0700
+Processing by HomepageController#index as HTML
+  [1m[36mContentBlock Load (0.2ms)[0m  [1mSELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'featured_researcher'  ORDER BY created_at DESC LIMIT 1[0m
+  [1m[35mContentBlock Load (0.1ms)[0m  SELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'marketing_text' LIMIT 1
+Usergroups are ["public"]
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["_query_:\"{!raw f=has_model_ssim}GenericFile\"", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>4, "q"=>"", "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"system_create_dtsi desc"}
+Solr fetch (6.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_marketing.html.erb (0.2ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_header.html.erb (1.7ms)
+  [1m[36m (0.1ms)[0m  [1mSELECT "featured_works"."generic_file_id" FROM "featured_works"   ORDER BY "featured_works"."order" ASC[0m
+  [1m[35mFeaturedWork Load (0.2ms)[0m  SELECT "featured_works".* FROM "featured_works"   ORDER BY "featured_works"."order" ASC
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_works.html.erb (5.7ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_recents.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_featured_researcher.html.erb (0.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_tagcloud.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home_content.html.erb (10.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/_home.html.erb (13.7ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/homepage/index.html.erb within layouts/homepage (14.6ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (1245.9ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (2.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (1.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (2.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.0ms)
+Completed 200 OK in 1284ms (Views: 1274.1ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/assets/blacklight_gallery/default.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/openseadragon/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight_gallery.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/generic_files.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/style.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/thumbnail-scaling.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/video-js.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/select2.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia-audio-overrides.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/nestable.css?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/autofocus.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/bookmark_toggle.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/collapsable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/blacklight/blacklight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect-highlight.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/button.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/popover.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/bootstrap/tab.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/terms_of_service.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/app.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/tmpl.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/fileupload/locale.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/trophy.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/featured_works.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/featured_researcher.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/batch_select_all.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/edit_metadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/single_use_link.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/audio.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/search.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/ga_events.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/tabs.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/user_search.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:48 -0700
+
+
+Started GET "/assets/sufia/transfers.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia/proxy_rights.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra/batch_select.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia/dashboard_actions.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia/batch.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra_collections.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra-editor/manage_repeating_fields.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra-editor/keyboard_support.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra-editor/editMetadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/hydra-editor/hydra-editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/jquery.treetable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/browse_everything/behavior.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/jquery.tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/jquery.tinysort.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/jquery.blacklightTagCloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia/tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/nestable.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/sufia.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-04-22 10:36:49 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/hydra-editor/manage_repeating_fields.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/jquery.treetable.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/browse_everything/behavior.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/nestable.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/sufia/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/bootstrap/glyphicons-halflings-regular.woff2" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/assets/old_main_tulips.jpg" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+
+
+Started GET "/catalog/facet/tag_sim.json" for 127.0.0.1 at 2015-04-22 10:37:03 -0700
+Processing by CatalogController#facet as JSON
+  Parameters: {"id"=>"tag_sim"}
+Usergroups are ["public"]
+Solr parameters: {"facet.field"=>["resource_type_sim", "creator_sim", "tag_sim", "subject_sim", "language_sim", "based_near_sim", "publisher_sim", "file_format_sim"], "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "qt"=>"search", "rows"=>10, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>6, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc"}
+Solr query: get select {"qt"=>"search", "facet.field"=>"tag_sim", "facet.query"=>[], "facet.pivot"=>[], "fq"=>["has_model_ssim:(\"GenericFile\" \"Collection\")", "edit_access_group_ssim:public OR discover_access_group_ssim:public OR read_access_group_ssim:public"], "hl.fl"=>[], "rows"=>0, "facet"=>true, "f.resource_type_sim.facet.limit"=>6, "f.creator_sim.facet.limit"=>6, "f.tag_sim.facet.limit"=>21, "f.subject_sim.facet.limit"=>6, "f.language_sim.facet.limit"=>6, "f.based_near_sim.facet.limit"=>6, "f.publisher_sim.facet.limit"=>6, "f.file_format_sim.facet.limit"=>6, "sort"=>"score desc, date_uploaded_dtsi desc", "f.tag_sim.facet.offset"=>0}
+Solr fetch (6.5ms)
+Completed 200 OK in 14ms (Views: 0.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2015-04-22 10:37:07 -0700
+Processing by Devise::SessionsController#new as HTML
+  Rendered /home/krug/.gem/ruby/gems/devise-3.4.1/app/views/devise/shared/_links.html.erb (1.4ms)
+  Rendered /home/krug/.gem/ruby/gems/devise-3.4.1/app/views/devise/sessions/new.html.erb within layouts/sufia-one-column (20.2ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (809.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (1.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (1.7ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.0ms)
+Completed 200 OK in 844ms (Views: 842.1ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2015-04-22 10:37:18 -0700
+Processing by Devise::SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"f6XQYMBp/6Z7Lv49JSWZRHYjLVHbOEbZDRfTLgOxOCY=", "user"=>{"email"=>"admin@archive.local", "password"=>"[FILTERED]", "remember_me"=>"0"}, "commit"=>"Log in"}
+  [1m[36mUser Load (0.2ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."email" = 'admin@archive.local'  ORDER BY "users"."id" ASC LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  begin transaction
+Binary data inserted for `string` type on column `current_sign_in_ip`
+Binary data inserted for `string` type on column `last_sign_in_ip`
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "users" SET "current_sign_in_at" = ?, "current_sign_in_ip" = ?, "last_sign_in_at" = ?, "last_sign_in_ip" = ?, "sign_in_count" = ?, "updated_at" = ? WHERE "users"."id" = 1[0m  [["current_sign_in_at", "2015-04-22 17:37:18.606374"], ["current_sign_in_ip", "127.0.0.1"], ["last_sign_in_at", "2015-04-22 17:37:18.606374"], ["last_sign_in_ip", "127.0.0.1"], ["sign_in_count", 1], ["updated_at", "2015-04-22 17:37:18.607539"]]
+  [1m[35m (14.5ms)[0m  commit transaction
+  [1m[36m (0.1ms)[0m  [1mSELECT DISTINCT COUNT(DISTINCT "mailboxer_conversations"."id") FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."is_read" = 'f'[0m
+  [1m[35mMailboxer::Conversation Load (0.2ms)[0m  SELECT DISTINCT "mailboxer_conversations".* FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f'  ORDER BY mailboxer_conversations.updated_at DESC
+Redirected to http://127.0.0.1:3000/dashboard
+Completed 302 Found in 126ms (ActiveRecord: 16.1ms)
+
+
+Started GET "/dashboard" for 127.0.0.1 at 2015-04-22 10:37:18 -0700
+Processing by DashboardController#index as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."id" = 1  ORDER BY "users"."id" ASC LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  SELECT DISTINCT COUNT(DISTINCT "mailboxer_conversations"."id") FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."is_read" = 'f'
+  [1m[36mMailboxer::Conversation Load (0.1ms)[0m  [1mSELECT DISTINCT "mailboxer_conversations".* FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f'  ORDER BY mailboxer_conversations.updated_at DESC[0m
+  [1m[35mProxyDepositRequest Load (0.1ms)[0m  SELECT "proxy_deposit_requests".* FROM "proxy_deposit_requests"  WHERE "proxy_deposit_requests"."receiving_user_id" = 1
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_heading_greetings.html.erb (0.7ms)
+Usergroups are ["public", "registered"]
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_heading_actions.html.erb (46.9ms)
+  [1m[36mUserStat Load (0.1ms)[0m  [1mSELECT "user_stats".* FROM "user_stats"  WHERE "user_stats"."user_id" = 1  ORDER BY "user_stats"."date" ASC[0m
+  [1m[35mFollow Load (0.1ms)[0m  SELECT "follows".* FROM "follows"  WHERE "follows"."follower_id" = ? AND "follows"."follower_type" = ? AND "follows"."blocked" = 'f'  [["follower_id", 1], ["follower_type", "User"]]
+  [1m[36mFollow Load (0.1ms)[0m  [1mSELECT "follows".* FROM "follows"  WHERE "follows"."followable_id" = ? AND "follows"."followable_type" = ? AND "follows"."blocked" = 'f'[0m  [["followable_id", 1], ["followable_type", "User"]]
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_stats.html.erb (38.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_user_info.html.erb (1.2ms)
+  [1m[35m (0.2ms)[0m  SELECT DISTINCT COUNT(DISTINCT "mailboxer_conversations"."id") FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f'
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT DISTINCT COUNT(DISTINCT "mailboxer_conversations"."id") FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f'[0m
+  [1m[35mUser Load (0.8ms)[0m  SELECT "users".* FROM "users" INNER JOIN "proxy_deposit_rights" ON "users"."id" = "proxy_deposit_rights"."grantee_id" WHERE "proxy_deposit_rights"."grantor_id" = ?  [["grantor_id", 1]]
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_proxy_rights.html.erb (18.3ms)
+  [1m[36mProxyDepositRequest Load (0.2ms)[0m  [1mSELECT "proxy_deposit_requests".* FROM "proxy_deposit_requests"  WHERE "proxy_deposit_requests"."sending_user_id" = 1[0m
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_transfers.html.erb (2.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/_index_partials/_contents.html.erb (26.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/dashboard/index.html.erb within layouts/sufia-dashboard (121.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (784.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_notify_number.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_notify_link.html.erb (3.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_user_util_links_extra.html.erb (0.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (9.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (10.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (1.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (2.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.0ms)
+Completed 200 OK in 937ms (Views: 928.5ms | ActiveRecord: 2.5ms)
+
+
+Started GET "/assets/blacklight_gallery/default.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight_gallery.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/openseadragon/openseadragon.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/sufia.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/generic_files.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/fileupload/style.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/fileupload/thumbnail-scaling.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/fileupload/application.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/video-js.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/jquery-ui.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/select2.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/sufia-audio-overrides.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/nestable.css?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight/core.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight/autofocus.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight/checkbox_submit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight/bookmark_toggle.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:19 -0700
+
+
+Started GET "/assets/blacklight/ajax_modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/blacklight/search_context.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/blacklight/collapsable.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/transition.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/collapse.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/dropdown.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/alert.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/modal.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/blacklight/blacklight.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.core.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.menu.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.autocomplete.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.position.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery-ui-1.9.2/jquery.ui.effect-highlight.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/button.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/tooltip.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/popover.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/tab.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/video.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/audio.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery.validate.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/swfobject.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/ZeroClipboard.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/select2.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/flot/excanvas.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/flot/jquery.flot.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/flot/jquery.flot.time.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/flot/jquery.flot.selection.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/terms_of_service.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/app.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/fileupload/tmpl.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload-ui.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/fileupload/locale.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/uploader.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/fileupload.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/permissions.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/trophy.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/featured_works.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/featured_researcher.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/batch_select_all.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/edit_metadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/single_use_link.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/audio.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/search.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/ga_events.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/tabs.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/user_search.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/transfers.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/proxy_rights.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra/batch_select.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/dashboard_actions.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/batch.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra_collections.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra-editor/manage_repeating_fields.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra-editor/keyboard_support.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra-editor/editMetadata.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/hydra-editor/hydra-editor.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery.treetable.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/browse_everything/behavior.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery.tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery.tinysort.min.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/jquery.blacklightTagCloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/tagcloud.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/nestable.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia/batch_edit.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/sufia.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-04-22 10:37:20 -0700
+
+
+Started GET "/assets/bootstrap/glyphicons-halflings-regular.woff2" for 127.0.0.1 at 2015-04-22 10:37:21 -0700
+
+
+Started GET "/assets/select2.png" for 127.0.0.1 at 2015-04-22 10:37:21 -0700
+
+
+Started GET "/about/" for 127.0.0.1 at 2015-04-22 10:37:24 -0700
+Processing by PagesController#show as HTML
+  Parameters: {"id"=>"about_page"}
+  [1m[35mUser Load (0.2ms)[0m  SELECT  "users".* FROM "users"  WHERE "users"."id" = 1  ORDER BY "users"."id" ASC LIMIT 1
+  [1m[36m (0.1ms)[0m  [1mSELECT DISTINCT COUNT(DISTINCT "mailboxer_conversations"."id") FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."is_read" = 'f'[0m
+  [1m[35mMailboxer::Conversation Load (0.1ms)[0m  SELECT DISTINCT "mailboxer_conversations".* FROM "mailboxer_conversations" INNER JOIN "mailboxer_notifications" ON "mailboxer_notifications"."conversation_id" = "mailboxer_conversations"."id" AND "mailboxer_notifications"."type" IN ('Mailboxer::Message') INNER JOIN "mailboxer_receipts" ON "mailboxer_receipts"."notification_id" = "mailboxer_notifications"."id" WHERE "mailboxer_notifications"."type" = 'Mailboxer::Message' AND "mailboxer_receipts"."receiver_id" = 1 AND "mailboxer_receipts"."receiver_type" = 'User' AND "mailboxer_receipts"."mailbox_type" = 'inbox' AND "mailboxer_receipts"."trashed" = 'f' AND "mailboxer_receipts"."deleted" = 'f'  ORDER BY mailboxer_conversations.updated_at DESC
+  [1m[36mContentBlock Load (0.1ms)[0m  [1mSELECT  "content_blocks".* FROM "content_blocks"  WHERE "content_blocks"."name" = 'about_page' LIMIT 1[0m
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "content_blocks" ("created_at", "name", "updated_at") VALUES (?, ?, ?)[0m  [["created_at", "2015-04-22 17:37:24.779516"], ["name", "about_page"], ["updated_at", "2015-04-22 17:37:24.779516"]]
+  [1m[35m (13.5ms)[0m  commit transaction
+Usergroups are ["public", "registered"]
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/pages/show.html.erb within layouts/sufia-one-column (1.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_ga.html.erb (0.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_head_tag_extras.html.erb (0.0ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/layouts/_head_tag_content.html.erb (778.5ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_logo.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_notify_number.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_notify_link.html.erb (2.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/users/_user_util_links_extra.html.erb (0.7ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_user_util_links.html.erb (6.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_masthead.html.erb (9.1ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/catalog/_search_form.html.erb (1.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_controls.html.erb (3.8ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_flash_msg.html.erb (0.4ms)
+  Rendered /home/krug/.gem/ruby/gems/sufia-6.0.0/app/views/_footer.html.erb (0.3ms)
+  Rendered /home/krug/.gem/ruby/gems/blacklight-5.13.1/app/views/shared/_ajax_modal.html.erb (0.2ms)
+Completed 200 OK in 825ms (Views: 805.0ms | ActiveRecord: 14.2ms)

@@ -17,5 +17,19 @@
     rake jetty:clean
     rake jetty:start
     rake db:migrate
+    rake db:seed
 
+
+> This will create an admin user admin@archive.local with password ` archive2015 `
+
+#Promote that user to admin
     rails s
+
+##From rails console
+
+
+    r = Role.create name: "admin"
+    r.users << User.find_by_user_key( "admin@archive.local" )
+
+
+r.save

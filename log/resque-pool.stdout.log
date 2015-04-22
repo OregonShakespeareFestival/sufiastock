@@ -1,0 +1,4 @@
+resque-pool-manager[sufiastock][5125]: Resque Pool running in development environment
+resque-pool-manager[sufiastock][5125]: started manager
+resque-pool-manager[sufiastock][5125]: Pool contains worker PIDs: [5132]
+resque-pool-worker[sufiastock][5132]: Starting worker yoshi.local:5132:*
