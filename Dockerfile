@@ -24,7 +24,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 RUN yum install unzip -y
 
-RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler -y
+RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler ImageMagick ImageMagick-devel -y
 
 RUN yum install redis -y
 
