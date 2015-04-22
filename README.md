@@ -30,6 +30,4 @@
 
     r = Role.create name: "admin"
     r.users << User.find_by_user_key( "admin@archive.local" )
-
-
-r.save
+    r.save
