@@ -19,6 +19,7 @@
 /tmp/pids/*
 /tmp/cache/.*
 /jetty
+/jetty/*
 /.vagrant
 /public/uploads
 /public/assets
