@@ -43,6 +43,7 @@ gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'  # required to handle
 
 gem "hydra-role-management"
 gem "unicorn"
+gem 'mysql2'
 
 gem "rsolr", "~> 1.0.6"
 gem "devise"
