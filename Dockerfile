@@ -38,7 +38,6 @@ RUN yum install libreoffice-headless -y
 
 RUN gem install nokogiri -- --use-system-libraries
 
-ADD config/container/nginx-sites.conf /etc/nginx/conf.d/default.conf
 ADD config/container/start-server.sh /usr/bin/start-server
 RUN chmod +x /usr/bin/start-server
 
