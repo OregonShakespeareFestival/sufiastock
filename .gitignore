@@ -16,6 +16,7 @@
 /.bundle
 **.log
 /tmp
+/tmp/pids/*
 /tmp/cache/.*
 /jetty
 /.vagrant
