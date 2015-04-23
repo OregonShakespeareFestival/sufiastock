@@ -8,18 +8,28 @@
 # /.bundle
 #
 # # Ignore the default SQLite database.
- /db/*.sqlite3
- /db/*.sqlite3-journal
+/db/*.sqlite3
+/db/*.sqlite3-journal
 #
 # # Ignore all logfiles and tempfiles.
- *.log
- /tmp
- /jetty
- /.vagrant
- /public/uploads
- /public/assets
- /sufia
- /vendor/engines/production_credits/spec/dummy/db/*.sqlite3
- /vendor/engines/production_credits/spec/dummy/log/*.log
- /vendor/engines/production_credits/spec/dummy/tmp/
- /vendor/engines/production_credits/spec/dummy/.sass-cache
+/log/*.log
+/.bundle
+**.log
+/tmp
+/tmp/pids/*
+/tmp/cache/.*
+/jetty
+/jetty/*
+/.vagrant
+/public/uploads
+/public/assets
+/public/assets/*
+public/data/*
+/sufia
+/vendor/engines/production_credits/spec/dummy/db/*.sqlite3
+/vendor/engines/production_credits/spec/dummy/log/*.log
+/vendor/engines/production_credits/spec/dummy/tmp/
+/vendor/engines/production_credits/spec/dummy/.sass-cache
+/Gemfile.lock
+.DS_Store
+
