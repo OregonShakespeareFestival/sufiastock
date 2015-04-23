@@ -22,13 +22,10 @@ RUN yum install epel-release -y
 RUN rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.el7.nux.noarch.rpm
 
 RUN yum install -y nginx curl nodejs
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 RUN yum install unzip -y
 
 RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler ImageMagick ImageMagick-devel -y
-
-# TODO: enable redis
 
 RUN yum install redis -y
 
@@ -55,11 +52,9 @@ RUN rake db:create
 RUN rake db:migrate
 RUN rake db:seed
 
-#RUN jetty:config
-
 # Publish port 80
 EXPOSE 80
 EXPOSE 6379
 
 # Startup commands
-ENTRYPOINT /usr/bin/start-server 
+ENTRYPOINT /usr/bin/start-server
