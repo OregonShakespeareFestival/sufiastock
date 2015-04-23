@@ -4,4 +4,4 @@ development:
 test:
   url: <%= "http://127.0.0.1:#{ENV['TEST_JETTY_PORT'] || 8983}/solr/test" %>
 production:
-  url: <%= "http://#{ENV['HYDRASTAGINGJETTY_PORT_8983_TCP_ADDR']}:8983/solr" %>
+  url: <%= "http://#{ENV['HYDRAPRODUCTIONSOLR_PORT_8080_TCP_ADDR']}:8080/solr/osfsufia" %>
