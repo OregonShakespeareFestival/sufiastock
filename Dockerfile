@@ -27,7 +27,7 @@ RUN yum install -y nginx curl nodejs
 
 RUN yum install unzip -y
 
-RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler ImageMagick ImageMagick-devel -y
+RUN yum install git gcc make rubygem-nokogiri libxslt libxslt-devel libxml2 libxml2-devel sqlite-devel openssl-devel ruby-devel rubygem-devel rubygem-bundler ImageMagick ImageMagick-devel mariadb mariadb-devel -y
 
 RUN yum install redis -y
 
@@ -49,10 +49,6 @@ WORKDIR /rails
 # bundle install
 RUN /bin/bash -l -c "bundle install"
 RUN bundle exec rake assets:precompile --trace
-
-RUN rake db:create
-RUN rake db:migrate
-RUN rake db:seed
 
 # Publish port 80
 EXPOSE 80
