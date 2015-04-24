@@ -4,7 +4,7 @@
 docker run -d --name hydraproductiondb andrewkrug/mariadb
 
 #Spin up fedora4
-docker run -d --name hydraproductionfedora andrewkrug/fedora4
+docker run -d -p 8080:8080 --name hydraproductionfedora andrewkrug/fedora4
 
 #Spin up solr-latest
 docker run -d --name hydraproductionsolr andrewkrug/solr
