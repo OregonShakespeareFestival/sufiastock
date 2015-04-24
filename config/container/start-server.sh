@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /rails
-
+sleep 5;
+export TERM=xterm
 created=$( mysql -uroot -pmysqlPassword -h ${HYDRAPRODUCTIONDB_PORT_3306_TCP_ADDR} -e "show databases;" | grep -ic "${OSFSUFIA_DATABASE}" )
 if [ $created -eq 0 ]
 then
