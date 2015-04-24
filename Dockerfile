@@ -38,7 +38,14 @@ RUN yum install libreoffice-headless -y
 RUN gem install nokogiri -- --use-system-libraries
 
 ADD config/container/start-server.sh /usr/bin/start-server
-RUN chmod +x /usr/bin/start-server
+ADD ffmpeg/bin/ffmpeg /usr/bin/ffmpeg
+ADD ffmpeg/bin/ffprobe /usr/bin/ffprobe
+ADD ffmpeg/bin/ffserver /usr/bin/ffserver
+ADD ffmpeg/bin/lame /usr/bin/lame
+ADD ffmpeg/bin/vsyasm /usr/bin/vsyasm
+ADD ffmpeg/bin/x264 /usr/bin/x264
+ADD ffmpeg/bin/yasm /usr/bin/yasm
+ADD ffmpeg/bin/ytasm /usr/bin/ytasm
 
 # Add rails project to project directory
 ADD ./ /rails
