@@ -5,5 +5,5 @@ test:
   host: localhost
   port: 6379
 production:
-  host: localhost
+  host: <%= ENV['HYDRAPRODUCTIONREDIS_PORT_6379_TCP_ADDR'] %>
   port: 6379
