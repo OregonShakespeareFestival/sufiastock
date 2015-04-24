@@ -23,7 +23,6 @@ timeout 600
 @resque_pid = nil
 
 before_fork do |server, worker|
-  @resque_pid ||= spawn("bundle exec /usr/local/bin/rake " + \
-  "resque:work QUEUES=*")
+  @resque_pid ||= spawn("resque-pool --daemon --environment production start ")
 end
 
