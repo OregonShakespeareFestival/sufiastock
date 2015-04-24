@@ -31,5 +31,6 @@ public/data/*
 /vendor/engines/production_credits/spec/dummy/tmp/
 /vendor/engines/production_credits/spec/dummy/.sass-cache
 /Gemfile.lock
+*.rdb
 .DS_Store
 
