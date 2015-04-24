@@ -1,4 +1,5 @@
 #!/bin/bash
+source /usr/local/rvm/scripts/rvm
 cd /rails
 sleep 5;
 export TERM=xterm
