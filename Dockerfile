@@ -63,8 +63,6 @@ RUN /bin/bash -l -c "rvm install 2.1"
 
 RUN /bin/bash -l -c "rvm --default use 2.1"
 
-RUN yum install redis -y
-
 RUN yum install fpack -y
 
 RUN yum install libreoffice-headless -y
